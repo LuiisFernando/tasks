@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-// import Icon from 'react-native-vector-icons/FontAwesome'
+import { StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native'
+ import Icon from 'react-native-vector-icons/FontAwesome'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import commonstyles from '../commomStyles'
@@ -11,12 +11,12 @@ export default props => {
     if (props.doneAt !== null) {
         check = (
             <View style={styles.done}>
-                {/* <Icon name="check" size={20} 
-                    color={commonstyles.colors.secondary} /> */}
+                <Icon name="check" size={20} 
+                    color={commonstyles.colors.secondary} />
             </View>
         )
     } else {
-        check = <View style={styles.pending} />
+        check = <View style={styles.pendding} />
     }
 
     const descStyle = props.doneAt !== null ?
@@ -24,7 +24,9 @@ export default props => {
 
     return (
         <View style={styles.container}>
-            
+            <TouchableWithoutFeedback onPress={() => props.toggleTask(props.id)}>
+                <View style={styles.checkContainer}>{check}</View>
+            </TouchableWithoutFeedback>
             <View>
                 <Text style={[styles.description, descStyle]}>
                     {props.desc}
