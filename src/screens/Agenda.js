@@ -69,19 +69,13 @@ export default class Agenda extends Component {
     }
 
     toggleTask = id => {
-        // const tasks = [...this.state.tasks]
-        const tasks = this.state.tasks.map(task => {
+        const tasks = [...this.state.tasks]
+
+        tasks.forEach(task => {
             if (task.id === id) {
-                task = {...task}
                 task.doneAt = task.doneAt ? null : new Date()
             }
-            return task
         })
-        // tasks.forEach(task => {
-        //     if (task.id === id) {
-        //         task.doneAt = task.doneAt ? null : new Date()
-        //     }
-        // })
         this.setState({ tasks }, this.filterTasks())
     }
 
