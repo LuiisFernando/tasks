@@ -2,14 +2,17 @@ import React, { Component } from 'react'
 import {
     StyleSheet,
     Text,
-    TextInput,
     View,
     ImageBackground,
     TouchableOpacity,
     Alert
 } from 'react-native'
+import axios from 'axios'
+import { server, showError } from '../commom'
 import commonStyle from '../commomStyles'
 import backgroundImage from '../../assets/imgs/login.jpg'
+
+import AuthInput from '../components/AuthInput'
 
 export default class Auth extends Component {
     state = {
@@ -20,11 +23,43 @@ export default class Auth extends Component {
         confirmPassword: ''
     }
 
-    signinOrSignup = () => {
+    signinOrSignup = async () => {
         if (this.state.stageNew) {
-            Alert.alert('Sucesso', 'Criar Conta')
+            
+            try {
+                await axios.post(`${server}/signup`, {
+                    name: this.state.name,
+                    email: this.state.email,
+                    password: this.state.password,
+                    confirmPassword: this.state.confirmPassword
+                })
+
+                Alert.alert('Nice!', 'Usuário cadastrado com sucesso =D')
+                this.setState({ stageNew: false })
+            } catch(err) {
+                showError(err)
+            }
         } else {
-            Alert.alert('Sucesso', 'Logar')
+            
+            try {
+                axios.create(axios.defaults);
+                // var config = {
+                //     headers: {'Authorization': "bearer " + token}
+                // };
+
+                const res = await axios.post(`${server}/signin`, {
+                    email: this.state.email,
+                    password: this.state.password
+                })
+                
+                // set Authorization for any request 
+                axios.defaults.headers.common = {'Authorization': `bearer ${res.data.token}`}
+
+                //navigate to home
+                this.props.navigation.navigate('Home')
+            } catch(err) {
+                Alert.alert('Erro', 'Falha no Login! ' + err)
+            }
         }
     }
 
@@ -39,20 +74,22 @@ export default class Auth extends Component {
                     </Text>
 
                     {this.state.stageNew && 
-                        <TextInput placeholder='Nome' style={styles.input}
+                        <AuthInput icon='user' placeholder='Nome' style={styles.input}
                             value={this.state.name}
                             onChangeText={name => this.setState({ name })} />}
 
-                    <TextInput placeholder='E-mail' style={styles.input}
+                    <AuthInput icon='at' placeholder='E-mail' style={styles.input}
                         value={this.state.email}
                         onChangeText={email => this.setState({ email })} />
                         
-                    <TextInput placeholder='Senha' style={styles.input}
+                    <AuthInput icon='lock' secureTextEntry={true} placeholder='Senha' 
+                        style={styles.input}
                         value={this.state.password}
                         onChangeText={password => this.setState({ password })} />
 
                     {this.state.stageNew && 
-                        <TextInput placeholder='Confirmação' style={styles.input}
+                        <AuthInput icon='asterisk' secureTextEntry={true} placeholder='Confirmação' 
+                            style={styles.input}
                             value={this.state.confirmPassword}
                             onChangeText={confirmPassword => this.setState({ confirmPassword })} />}
 

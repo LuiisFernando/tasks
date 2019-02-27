@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
  } from 'react-native'
 
- import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 import Swipeable from 'react-native-swipeable'
