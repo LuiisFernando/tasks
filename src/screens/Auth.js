@@ -23,47 +23,70 @@ export default class Auth extends Component {
         confirmPassword: ''
     }
 
-    signinOrSignup = async () => {
+    signin = async () => {
+ 
+        try {
+            axios.create(axios.defaults);
+            // var config = {
+            //     headers: {'Authorization': "bearer " + token}
+            // };
+
+            const res = await axios.post(`${server}/signin`, {
+                email: this.state.email,
+                password: this.state.password
+            })
+            
+            // set Authorization for any request 
+            axios.defaults.headers.common = {'Authorization': `bearer ${res.data.token}`}
+
+            //navigate to home
+            this.props.navigation.navigate('Home')
+        } catch(err) {
+            Alert.alert('Erro', 'Falha no Login! ' + err)
+        }
+    }
+
+    signup = async () => {
+
+        try {
+            await axios.post(`${server}/signup`, {
+                name: this.state.name,
+                email: this.state.email,
+                password: this.state.password,
+                confirmPassword: this.state.confirmPassword
+            })
+
+            Alert.alert('Nice!', 'Usuário cadastrado com sucesso =D')
+            this.setState({ stageNew: false })
+        } catch(err) {
+            showError(err)
+        }
+    }
+
+    signinOrSignup = () => {
         if (this.state.stageNew) {
-            
-            try {
-                await axios.post(`${server}/signup`, {
-                    name: this.state.name,
-                    email: this.state.email,
-                    password: this.state.password,
-                    confirmPassword: this.state.confirmPassword
-                })
-
-                Alert.alert('Nice!', 'Usuário cadastrado com sucesso =D')
-                this.setState({ stageNew: false })
-            } catch(err) {
-                showError(err)
-            }
+            this.signup()
         } else {
-            
-            try {
-                axios.create(axios.defaults);
-                // var config = {
-                //     headers: {'Authorization': "bearer " + token}
-                // };
-
-                const res = await axios.post(`${server}/signin`, {
-                    email: this.state.email,
-                    password: this.state.password
-                })
-                
-                // set Authorization for any request 
-                axios.defaults.headers.common = {'Authorization': `bearer ${res.data.token}`}
-
-                //navigate to home
-                this.props.navigation.navigate('Home')
-            } catch(err) {
-                Alert.alert('Erro', 'Falha no Login! ' + err)
-            }
+           this.signin()
         }
     }
 
     render() {
+        const validations = []
+        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        validations.push(this.state.email && re.exec(this.state.email))
+        validations.push(this.state.password && this.state.password.length >= 3)
+
+        if (this.state.stageNew) {
+            validations.push(this.state.name && this.state.name.trim())
+            validations.push(this.state.confirmPassword)
+            validations.push(this.state.password === this.state.confirmPassword)
+        }
+        
+        //all is all validations and v is single validation if any validation is false, then valid form receive false
+        const validForm = validations.reduce((all, v) => all && v)
+
         return (
             <ImageBackground source={backgroundImage} style={styles.background}>
                 <Text style={styles.title}>Tasks</Text>
@@ -93,8 +116,9 @@ export default class Auth extends Component {
                             value={this.state.confirmPassword}
                             onChangeText={confirmPassword => this.setState({ confirmPassword })} />}
 
-                    <TouchableOpacity onPress={this.signinOrSignup}>
-                        <View style={styles.button}>
+                    <TouchableOpacity disabled={!validForm}
+                        onPress={this.signinOrSignup}>
+                        <View style={[styles.button, !validForm ? { backgroundColor: '#AAA'} : {}]}>
                             <Text style={styles.buttonText}>
                                 { this.state.stageNew ? 'Registrar' : 'Entrar' }
                             </Text>
