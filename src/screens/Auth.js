@@ -27,10 +27,6 @@ export default class Auth extends Component {
  
         try {
             axios.create(axios.defaults);
-            // var config = {
-            //     headers: {'Authorization': "bearer " + token}
-            // };
-
             const res = await axios.post(`${server}/signin`, {
                 email: this.state.email,
                 password: this.state.password
@@ -73,9 +69,9 @@ export default class Auth extends Component {
 
     render() {
         const validations = []
-        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        validations.push(this.state.email && re.exec(this.state.email))
+        validations.push(this.state.email && regex.exec(this.state.email))
         validations.push(this.state.password && this.state.password.length >= 3)
 
         if (this.state.stageNew) {
