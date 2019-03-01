@@ -52,7 +52,6 @@ export default class Agenda extends Component {
         } catch(err) {
             showError(err)
         }
-        this.setState({ tasks }, this.filterTasks)
     }
 
     filterTasks = () => {
@@ -82,12 +81,17 @@ export default class Agenda extends Component {
 
     loadTasks = async () => {
         try {
+            // set maxdate setting current day with hour 23:59 to get only tasks of the day
             const maxDate = moment().format('YYYY-MM-DD 23:59')
             const res = await axios.get(`${server}/tasks?date=${maxDate}`)
             this.setState({ tasks: res.data }, this.filterTasks)
         } catch(err) {
             showError(err)
         }
+    }
+
+    openMenu() {
+        this.props.navigation.openDrawer();
     }
 
     render() {
@@ -98,6 +102,10 @@ export default class Agenda extends Component {
                     onCancel={() => this.setState({ showAddTask: false })} />
                 <ImageBackground source={todayImage} style={styles.background}>
                     <View style={styles.iconBar}>
+                    <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+                            <Icon name='align-justify'
+                                size={20} color={commonstyles.colors.secondary} />
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={this.toggleFilter}>
                             <Icon name={this.state.showDoneTasks ? 'eye' : 'eye-slash'}
                                 size={20} color={commonstyles.colors.secondary} />
