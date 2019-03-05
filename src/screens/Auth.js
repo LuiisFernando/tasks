@@ -5,7 +5,8 @@ import {
     View,
     ImageBackground,
     TouchableOpacity,
-    Alert
+    Alert,
+    AsyncStorage
 } from 'react-native'
 import axios from 'axios'
 import { server, showError } from '../commom'
@@ -34,6 +35,8 @@ export default class Auth extends Component {
             
             // set Authorization for any request 
             axios.defaults.headers.common = {'Authorization': `bearer ${res.data.token}`}
+
+            AsyncStorage.setItem('userData', JSON.stringify(res.data))
 
             //navigate to home
             this.props.navigation.navigate('Home', res.data)

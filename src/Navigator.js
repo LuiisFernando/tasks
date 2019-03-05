@@ -4,6 +4,7 @@ import { createSwitchNavigator, createAppContainer, createDrawerNavigator } from
 import commomStyles from './commomStyles'
 
 import Menu from './screens/Menu'
+import AuthOrApp from './screens/AuthOrApp'
 import Agenda from './screens/Agenda'
 import Auth from './screens/Auth'
 
@@ -58,6 +59,10 @@ const MenuNavigator = createDrawerNavigator(MenuRoutes, MenuConfig)
 
 
 const MainRoutes = {
+    Loading: {
+        name: 'Loading',
+        screen: AuthOrApp
+    },
     Auth: {
         name: 'Auth',
         screen: Auth
@@ -69,7 +74,7 @@ const MainRoutes = {
 }
 
 // definig mainNavigator and initialRoute Auth
-const MainNavigator = createSwitchNavigator(MainRoutes, { initialRouteName: 'Auth' })
+const MainNavigator = createSwitchNavigator(MainRoutes, { initialRouteName: 'Loading' })
 
 const MainNav = createAppContainer(MainNavigator)
 
