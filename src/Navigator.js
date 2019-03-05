@@ -40,7 +40,7 @@ const MenuRoutes = {
 
 const MenuConfig = {
     initialRouteName: 'Today',
-    //contentComponent: Menu,
+    contentComponent: Menu,
     tabBarOptions: {
         style: {
             labelStyle: commomStyles.fontFamily,
