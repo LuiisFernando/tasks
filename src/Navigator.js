@@ -2,6 +2,8 @@ import React from 'react'
 import { createSwitchNavigator, createAppContainer, createDrawerNavigator } from 'react-navigation'
 
 import commomStyles from './commomStyles'
+
+import Menu from './screens/Menu'
 import Agenda from './screens/Agenda'
 import Auth from './screens/Auth'
 
@@ -38,6 +40,7 @@ const MenuRoutes = {
 
 const MenuConfig = {
     initialRouteName: 'Today',
+    //contentComponent: Menu,
     tabBarOptions: {
         style: {
             labelStyle: commomStyles.fontFamily,
